@@ -22,8 +22,34 @@ void setup(void) {
     Serial.print("Number of sensors: ");
     Serial.println(NUM_SENSORS);
 
-void loop() {
-  // put your main code here, to run repeatedly:
-
     g_sensors.begin();
+}
+
+void loop(void) { 
+    Serial.println("\n\nRequesting temperatures...");
+    g_sensors.requestTemperatures();
+    Serial.println("DONE");
+  
+    for (size_t i = 0; i < NUM_SENSORS; i++) {
+        Serial.print("Sensor ");
+        Serial.print(i);
+        Serial.print(": ");
+        
+        float temp_c = g_sensors.getTempCByIndex(i);
+        if (temp_c == DEVICE_DISCONNECTED_C) {
+            Serial.print("Error: Could not read temperature data for sensor ");
+            Serial.println(i + 1);
+            Serial.println(" (index ");
+            Serial.print(i);
+            Serial.println("). Skipping the rest.");
+            break;
+        } else {
+            Serial.print(temp_c);
+            Serial.print(" °C - ");
+            Serial.print(g_sensors.getTempFByIndex(i));
+            Serial.println(" °F");
+        }
+    }
+
+    delay(1000);
 }
