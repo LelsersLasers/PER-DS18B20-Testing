@@ -14,6 +14,7 @@
 #define LOOP_DELAY (1000)
 #define ONE_WIRE_PIN (2)
 #define NUM_SENSORS (1)
+#define LED_PIN (13)
 
 
 OneWire g_one_wire(ONE_WIRE_PIN);
@@ -97,6 +98,9 @@ void loop(void) {
     #ifdef SEARCH_MODE_ACTIVE
         search_addresses();
     #endif
+
+    bool current_led_state = digitalRead(LED_PIN);
+    digitalWrite(LED_PIN, !current_led_state);
 
     delay(LOOP_DELAY);
 }
