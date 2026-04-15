@@ -59,9 +59,43 @@ void read_temps(void) {
     }
 }
 
+void search_addresses(void) {
+    uint8_t address[8];
+    uint8_t count = 0;
+
+
+    if (g_one_wire.search(address)) {
+        Serial.print("\nuint8_t pin");
+        Serial.print(ONE_WIRE_PIN, DEC);
+        Serial.println("[][8] = {");
+        do {
+            count++;
+            Serial.println("  {");
+            for (uint8_t i = 0; i < 8; i++) {
+                Serial.print("0x");
+                if (address[i] < 0x10) {
+                    Serial.print("0");
+                }
+                Serial.print(address[i], HEX);
+                if (i < 7) { 
+                    Serial.print(", ");
+                }
+            }
+            Serial.println("  },");
+        } while (g_one_wire.search(address));
+
+        Serial.println("};");
+        Serial.print("Total number of sensors found: ");
+        Serial.println(count);
+    }
+}
+
 void loop(void) { 
     #ifdef READ_MODE_ACTIVE
         read_temps();
+    #endif
+    #ifdef SEARCH_MODE_ACTIVE
+        search_addresses();
     #endif
 
     delay(LOOP_DELAY);
