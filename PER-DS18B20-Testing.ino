@@ -5,6 +5,13 @@
 #include <DallasTemperature.h>
 
 
+// If defined, print out all found addresses on the OW bus
+#define SEARCH_MODE_ACTIVE
+// If defined, read and print out the temperature data for all found sensors on the OW bus
+#define READ_MODE_ACTIVE
+
+
+#define LOOP_DELAY (1000)
 #define ONE_WIRE_PIN (2)
 #define NUM_SENSORS (1)
 
@@ -25,31 +32,37 @@ void setup(void) {
     g_sensors.begin();
 }
 
-void loop(void) { 
+
+void read_temps(void) {
     Serial.println("\n\nRequesting temperatures...");
     g_sensors.requestTemperatures();
     Serial.println("DONE");
   
-    for (size_t i = 0; i < NUM_SENSORS; i++) {
-        Serial.print("Sensor ");
-        Serial.print(i);
-        Serial.print(": ");
-        
+    for (size_t i = 0; i < NUM_SENSORS; i++) {    
         float temp_c = g_sensors.getTempCByIndex(i);
         if (temp_c == DEVICE_DISCONNECTED_C) {
             Serial.print("Error: Could not read temperature data for sensor ");
-            Serial.println(i + 1);
-            Serial.println(" (index ");
+            Serial.print(i + 1);
+            Serial.print(" (index ");
             Serial.print(i);
             Serial.println("). Skipping the rest.");
             break;
         } else {
+            Serial.print("Sensor ");
+            Serial.print(i);
+            Serial.print(": ");
             Serial.print(temp_c);
             Serial.print(" °C - ");
             Serial.print(g_sensors.getTempFByIndex(i));
             Serial.println(" °F");
         }
     }
+}
 
-    delay(1000);
+void loop(void) { 
+    #ifdef READ_MODE_ACTIVE
+        read_temps();
+    #endif
+
+    delay(LOOP_DELAY);
 }
