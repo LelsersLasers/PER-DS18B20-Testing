@@ -35,7 +35,7 @@ void setup(void) {
 
 
 void read_temps(void) {
-    Serial.println("\n\nRequesting temperatures...");
+    Serial.println("Requesting temperatures...");
     g_sensors.requestTemperatures();
     Serial.println("DONE");
   
@@ -64,6 +64,8 @@ void search_addresses(void) {
     uint8_t address[8];
     uint8_t count = 0;
 
+    Serial.println("Searching for devices...");
+
 
     if (g_one_wire.search(address)) {
         Serial.print("\nuint8_t pin");
@@ -88,10 +90,14 @@ void search_addresses(void) {
         Serial.println("};");
         Serial.print("Total number of sensors found: ");
         Serial.println(count);
+    } else {
+        Serial.println("No devices found.");
     }
 }
 
-void loop(void) { 
+void loop(void) {
+    Serial.println("\n\n");
+ 
     #ifdef READ_MODE_ACTIVE
         read_temps();
     #endif
