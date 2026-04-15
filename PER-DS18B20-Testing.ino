@@ -9,7 +9,10 @@
 #define NUM_SENSORS (1)
 
 
-}
+OneWire g_one_wire(ONE_WIRE_PIN);
+
+DallasTemperature g_sensors(&g_one_wire);
+
 void setup(void) {
     Serial.begin(9600);
     Serial.println("Simple Teensy based setup to test our E-meter therm harness.");
@@ -22,4 +25,5 @@ void setup(void) {
 void loop() {
   // put your main code here, to run repeatedly:
 
+    g_sensors.begin();
 }
