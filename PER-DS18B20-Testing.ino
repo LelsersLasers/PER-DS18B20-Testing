@@ -71,7 +71,8 @@ void search_addresses(void) {
     uint8_t address[8];
     uint8_t count = 0;
 
-
+    Serial.print(loop_counter);
+    Serial.println(" - Searching for devices...");
 
     if (g_one_wire.search(address)) {
         Serial.print("\nuint8_t pin");
@@ -79,8 +80,10 @@ void search_addresses(void) {
         Serial.println("[][8] = {");
         do {
             count++;
-            Serial.println("  {");
+            Serial.print("  { ");
+            long long id_decimal = 0;
             for (uint8_t i = 0; i < 8; i++) {
+                id_decimal |= (long long)address[i] << i;
                 Serial.print("0x");
                 if (address[i] < 0x10) {
                     Serial.print("0");
@@ -90,7 +93,8 @@ void search_addresses(void) {
                     Serial.print(", ");
                 }
             }
-            Serial.println("  },");
+            Serial.print("  } - ");
+            Serial.println(id_decimal);
         } while (g_one_wire.search(address));
 
         Serial.println("};");
