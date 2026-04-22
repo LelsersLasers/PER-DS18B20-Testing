@@ -76,8 +76,12 @@ void loop(void) {
  
     int found_sensors = read_temps();
 
-    bool current_led_state = digitalRead(LED_PIN);
-    digitalWrite(LED_PIN, !current_led_state);
+    // LED: If we found at least 1 sensor, turn on the LED, otherwise turn it off.
+    if (found_sensors > 0) {
+        digitalWrite(LED_PIN, HIGH);
+    } else {
+        digitalWrite(LED_PIN, LOW);
+    }
 
     delay(LOOP_DELAY);
 }
