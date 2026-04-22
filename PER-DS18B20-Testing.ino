@@ -57,7 +57,13 @@ void read_temps(void) {
             break;
         } else {
             Serial.print("Sensor ");
-            Serial.print(i);
+            uint8_t address[8] = { 0 };
+            g_sensors.getAddress(address, i);
+            long long id_decimal = 0;
+            for (uint8_t j = 0; j < 8; j++) {
+                id_decimal |= (long long)address[j] << j;
+            }
+            Serial.print(id_decimal);
             Serial.print(": ");
             Serial.print(temp_c);
             Serial.print(" °C - ");
