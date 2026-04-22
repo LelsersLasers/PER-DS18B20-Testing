@@ -5,16 +5,6 @@
 #include <DallasTemperature.h>
 
 
-// If defined, print out all found addresses on the OW bus
-// #define SEARCH_MODE_ACTIVE
-// If defined, read and print out the temperature data for all found sensors on the OW bus
-#define READ_MODE_ACTIVE
-
-#if defined(SEARCH_MODE_ACTIVE) && defined(READ_MODE_ACTIVE)
-    #error "Both SEARCH_MODE_ACTIVE and READ_MODE_ACTIVE are defined. Please define only one of them."
-#endif
-
-
 #define LOOP_DELAY (500)
 #define ONE_WIRE_PIN (2)
 #define NUM_SENSORS (8)
@@ -73,55 +63,13 @@ void read_temps(void) {
     }
 }
 
-void search_addresses(void) {
-    uint8_t address[8];
-    uint8_t count = 0;
-
-    Serial.print(loop_counter);
-    Serial.println(" - Searching for devices...");
-
-    if (g_one_wire.search(address)) {
-        Serial.print("\nuint8_t pin");
-        Serial.print(ONE_WIRE_PIN, DEC);
-        Serial.println("[][8] = {");
-        do {
-            count++;
-            Serial.print("  { ");
-            long long id_decimal = 0;
-            for (uint8_t i = 0; i < 8; i++) {
-                id_decimal |= (long long)address[i] << i;
-                Serial.print("0x");
-                if (address[i] < 0x10) {
-                    Serial.print("0");
-                }
-                Serial.print(address[i], HEX);
-                if (i < 7) { 
-                    Serial.print(", ");
-                }
-            }
-            Serial.print("  } - ");
-            Serial.println(id_decimal);
-        } while (g_one_wire.search(address));
-
-        Serial.println("};");
-        Serial.print("Total number of sensors found: ");
-        Serial.println(count);
-    } else {
-        Serial.println("No devices found.");
-    }
-}
 
 void loop(void) {
     loop_counter++;
 
-    Serial.println("\n\n");
+    Serial.println("\n");
  
-    #ifdef READ_MODE_ACTIVE
-        read_temps();
-    #endif
-    #ifdef SEARCH_MODE_ACTIVE
-        search_addresses();
-    #endif
+    read_temps();
 
     bool current_led_state = digitalRead(LED_PIN);
     digitalWrite(LED_PIN, !current_led_state);
