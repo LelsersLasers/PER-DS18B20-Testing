@@ -6,9 +6,14 @@
 
 
 // If defined, print out all found addresses on the OW bus
-#define SEARCH_MODE_ACTIVE
+// #define SEARCH_MODE_ACTIVE
 // If defined, read and print out the temperature data for all found sensors on the OW bus
 #define READ_MODE_ACTIVE
+
+#if defined(SEARCH_MODE_ACTIVE) && defined(READ_MODE_ACTIVE)
+    #error "Both SEARCH_MODE_ACTIVE and READ_MODE_ACTIVE are defined. Please define only one of them."
+#endif
+
 
 #define LOOP_DELAY (500)
 #define ONE_WIRE_PIN (2)
