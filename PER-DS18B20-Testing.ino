@@ -7,7 +7,6 @@
 
 #define LOOP_DELAY (500)
 #define ONE_WIRE_PIN (2)
-#define NUM_SENSORS (8)
 #define LED_PIN (13)
 
 
@@ -21,22 +20,26 @@ void setup(void) {
     Serial.begin(9600);
     Serial.println("Simple Teensy based setup to test our E-meter therm harness.");
     Serial.println("Read a chain of parasitic DS18B20s.");
-    Serial.print("OneWire bus on pin: ");
-    Serial.println(ONE_WIRE_PIN);
-    Serial.print("Number of sensors: ");
-    Serial.println(NUM_SENSORS);
+
+    pinMode(LED_PIN, OUTPUT);
 
     g_sensors.begin();
 }
 
 
-void read_temps(void) {
+// Returns the number of sensors found
+int read_temps(void) {
     Serial.print(loop_counter);
     Serial.println(" - Requesting temperatures...");
     g_sensors.requestTemperatures();
     Serial.println("DONE");
+
+    int found_sensors = g_sensors.getDeviceCount();
+    Serial.print("Found ");
+    Serial.print(found_sensors);
+    Serial.println(" sensors.");
   
-    for (size_t i = 0; i < NUM_SENSORS; i++) {    
+    for (int i = 0; i < found_sensors; i++) {    
         float temp_c = g_sensors.getTempCByIndex(i);
         if (temp_c == DEVICE_DISCONNECTED_C) {
             Serial.print("Error: Could not read temperature data for sensor ");
@@ -61,6 +64,8 @@ void read_temps(void) {
             Serial.println(" °F");
         }
     }
+
+    return found_sensors;
 }
 
 
@@ -69,7 +74,7 @@ void loop(void) {
 
     Serial.println("\n");
  
-    read_temps();
+    int found_sensors = read_temps();
 
     bool current_led_state = digitalRead(LED_PIN);
     digitalWrite(LED_PIN, !current_led_state);
