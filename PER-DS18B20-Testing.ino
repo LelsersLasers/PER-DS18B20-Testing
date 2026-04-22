@@ -22,8 +22,10 @@
 
 
 OneWire g_one_wire(ONE_WIRE_PIN);
-
 DallasTemperature g_sensors(&g_one_wire);
+
+size_t loop_counter = 0;
+
 
 void setup(void) {
     Serial.begin(9600);
@@ -39,7 +41,8 @@ void setup(void) {
 
 
 void read_temps(void) {
-    Serial.println("Requesting temperatures...");
+    Serial.print(loop_counter);
+    Serial.println(" - Requesting temperatures...");
     g_sensors.requestTemperatures();
     Serial.println("DONE");
   
@@ -68,7 +71,6 @@ void search_addresses(void) {
     uint8_t address[8];
     uint8_t count = 0;
 
-    Serial.println("Searching for devices...");
 
 
     if (g_one_wire.search(address)) {
@@ -100,6 +102,8 @@ void search_addresses(void) {
 }
 
 void loop(void) {
+    loop_counter++;
+
     Serial.println("\n\n");
  
     #ifdef READ_MODE_ACTIVE
