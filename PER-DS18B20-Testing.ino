@@ -10,10 +10,9 @@
 // If defined, read and print out the temperature data for all found sensors on the OW bus
 #define READ_MODE_ACTIVE
 
-
-#define LOOP_DELAY (1000)
+#define LOOP_DELAY (500)
 #define ONE_WIRE_PIN (2)
-#define NUM_SENSORS (1)
+#define NUM_SENSORS (8)
 #define LED_PIN (13)
 
 
